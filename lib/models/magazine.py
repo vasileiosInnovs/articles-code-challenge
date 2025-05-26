@@ -23,7 +23,7 @@ class Magazine:
         self._name = name
 
     @classmethod
-    def create_class(cls):
+    def create_table(cls):
         conn = get_connection()
         cursor = conn.cursor()
 
@@ -38,7 +38,7 @@ class Magazine:
         conn.commit()
 
     @classmethod
-    def drop_class(cls):
+    def drop_table(cls):
         conn = get_connection()
         cursor = conn.cursor()
 
