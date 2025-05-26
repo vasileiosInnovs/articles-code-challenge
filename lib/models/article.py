@@ -61,6 +61,12 @@ class Article:
        cursor.execute(sql, (self.title, self.author_id, self.magazine_id))
        conn.commit()
        self.id = cursor.lastrowid
+       
+    @classmethod
+    def create(cls, name):
+        author = cls(name)
+        author.save()
+        return author
 
     @classmethod
     def instance_from_db(cls, row):
@@ -129,3 +135,17 @@ class Article:
 
         row = cursor.execute(sql, (magazine_id, )).fetchone()
         return cls.instance_from_db(row) if row else None
+    
+    @classmethod
+    def get_all(cls):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT *
+            FROM authors
+        """
+        rows = cursor.execute(sql).fetchall()
+
+        return [cls.instance_from_db(row) for row in rows]
+ 
