@@ -48,3 +48,17 @@ class Magazine:
 
         cursor.execute(sql)
         conn.commit()
+
+    def save(self):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            INSERT INTO magazines (self.name, self.category)
+            VALUES (?, ?)
+        """
+
+        cursor.execute(sql, (self.name, self.category))
+        conn.commit()
+
+        self.id = cursor.lastrowid
