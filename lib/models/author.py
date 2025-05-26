@@ -31,6 +31,14 @@ class Author:
         cursor.execute(sql)
         conn.commit()
 
+        self.id = cursor.lastrowid
+
+    @classmethod
+    def create(cls, name):
+        author = cls(name)
+        author.save()
+        return author
+
     @classmethod
     def create_table(cls):
         conn = get_connection()
