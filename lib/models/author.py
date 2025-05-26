@@ -1,9 +1,14 @@
+from db.connection import get_connection
+
 class Author:
 
     def __init__(self, name, id=None):
         self.id = id
         self.name = name
         self._article = []
+
+    def __repr__(self):
+        return f'<Author {self.id}: {self.name}>'
 
     @property
     def name(self):
@@ -14,3 +19,18 @@ class Author:
         if not isinstance(name, str) or not (1 <= len(name) <= 25):
             raise ValueError("The name of the author has to be a string with a length of between 1 and 25")
         self._name = name
+
+    @classmethod
+    def create_table(cls):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            CREATE TABLE IF NOT EXISTS authors (
+            id INTEGER PRIMARY KEY,
+            name TEXT
+            )
+        """
+
+        cursor.execute(sql)
+        conn.commit()
