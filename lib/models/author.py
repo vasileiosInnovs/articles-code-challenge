@@ -20,6 +20,17 @@ class Author:
             raise ValueError("The name of the author has to be a string with a length of between 1 and 25")
         self._name = name
 
+    def save(self):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            INSERT INTO authors (name) VALUES (?)
+        """
+
+        cursor.execute(sql)
+        conn.commit()
+
     @classmethod
     def create_table(cls):
         conn = get_connection()
@@ -45,3 +56,5 @@ class Author:
         """
         cursor.execute(sql)
         conn.commit()
+
+    
