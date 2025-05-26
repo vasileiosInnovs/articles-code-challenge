@@ -1,3 +1,5 @@
+from db.connection import get_connection
+
 class Article:
     all = {}
 
@@ -10,4 +12,12 @@ class Article:
     def __repr__(self):
         return f'<Article {self.id}: {self.title} Author: {self.author_id} Magazine: {self.magazine_id}>'
     
+    @property
+    def title(self):
+        return self._title
     
+    @title.setter
+    def title(self, title):
+        if not isinstance(title, str) or not (1 <= len(title) <= 25):
+            raise ValueError("The title of the article has to be a string")
+        self._title = title
