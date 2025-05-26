@@ -63,3 +63,9 @@ class Magazine:
 
         self.id = cursor.lastrowid
         type(self).all[self.id] = self
+
+    @classmethod
+    def create(cls, name):
+        magazine = cls(name)
+        magazine.save()
+        return magazine
