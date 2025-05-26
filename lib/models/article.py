@@ -56,6 +56,46 @@ class Article:
        sql = """
            INSERT INTO articles (title, author_id, magazine_id) VALUES (?, ?, ?)
        """
-       cursor.execute(sql)
+       cursor.execute(sql, (self.title, self.author_id, self.magazine_id))
        conn.commit()
        self.id = cursor.lastrowid
+
+    @classmethod
+    def instance_from_db(cls, row):
+        article = cls.all.get(row[0])
+        if article:
+            article.title = row[1]
+            article.author_id = row[2]
+            article.magazine_id = row[3]
+        else:
+            article = cls(row[1], row[2], row[3])
+            article.id = row[0]
+            cls.all[article.id] = article
+        return article
+    
+    @classmethod
+    def find_by_id(cls, id):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT *
+            FROM articles
+            WHERE id = ?
+        """
+
+        row = cursor.execute(sql, (id, )).fetchone()
+        return cls.instance_from_db(row) if row else None
+    
+    @classmethod
+    def find_by_name(cls, name):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT *
+            FROM articles
+            WHERE name is ?
+        """
+        row = cursor.execute(sql, (name,)).fetchall()
+        return cls.instance_from_db(row) if row else None

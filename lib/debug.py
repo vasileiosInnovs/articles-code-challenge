@@ -2,8 +2,11 @@
 
 from db.connection import get_connection
 from models.author import Author
+#from models.article import Article
 
 import ipdb
-ipdb.set_trace()
 
 Author.create_table()
+#Article.create_table()
+
+ipdb.set_trace()

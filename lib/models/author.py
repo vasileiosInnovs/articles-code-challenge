@@ -59,7 +59,7 @@ class Author:
             INSERT INTO authors (name) VALUES (?)
         """
 
-        cursor.execute(sql)
+        cursor.execute(sql, (self.name,))
         conn.commit()
 
         self.id = cursor.lastrowid
