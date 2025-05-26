@@ -1,8 +1,9 @@
 class Author:
 
-    def __init__(self, name):
+    def __init__(self, name, id=None):
+        self.id = id
         self.name = name
-        self.article = []
+        self._article = []
 
     @property
     def name(self):
