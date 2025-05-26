@@ -21,3 +21,31 @@ class Article:
         if not isinstance(title, str) or not (1 <= len(title) <= 25):
             raise ValueError("The title of the article has to be a string")
         self._title = title
+
+    @classmethod
+    def create_table(cls):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            CREATE TABLE IF NOT EXISTS articles (
+            id INTEGER PRIMARY KEY,
+            title TEXT,
+            author_id INTEGER,
+            magazine_id INTEGER
+            )
+        """
+
+        cursor.execute(sql)
+        conn.commit()
+
+    @classmethod
+    def drop_table(cls):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            DROP TABLE IF EXISTS articles;
+        """
+        cursor.execute(sql)
+        conn.commit()
