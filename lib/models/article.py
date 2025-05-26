@@ -32,7 +32,9 @@ class Article:
             id INTEGER PRIMARY KEY,
             title TEXT,
             author_id INTEGER,
-            magazine_id INTEGER
+            magazine_id INTEGER,
+            FOREIGN KEY (author_id) REFERENCES authors(id),
+            FOREIGN KEY (magazine_id) REFERENCES magazines(id)
             )
         """
 
@@ -100,4 +102,30 @@ class Article:
         row = cursor.execute(sql, (title,)).fetchall()
         return cls.instance_from_db(row) if row else None
     
+    @classmethod
+    def find_by_author(cls, author_id):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT *
+            FROM articles
+            WHERE author_id = ?
+        """
+
+        row = cursor.execute(sql, (author_id, )).fetchone()
+        return cls.instance_from_db(row) if row else None
     
+    @classmethod
+    def find_by_magazine(cls, magazine_id):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT *
+            FROM articles
+            WHERE magazine_id = ?
+        """
+
+        row = cursor.execute(sql, (magazine_id, )).fetchone()
+        return cls.instance_from_db(row) if row else None
