@@ -49,3 +49,13 @@ class Article:
         """
         cursor.execute(sql)
         conn.commit()
+
+    def save(self):
+       conn = get_connection()
+       cursor = conn.cursor()
+       sql = """
+           INSERT INTO articles (title, author_id, magazine_id) VALUES (?, ?, ?)
+       """
+       cursor.execute(sql)
+       conn.commit()
+       self.id = cursor.lastrowid
