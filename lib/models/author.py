@@ -34,3 +34,14 @@ class Author:
 
         cursor.execute(sql)
         conn.commit()
+
+    @classmethod
+    def drop_table(cls):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            DROP TABLE IF EXISTS authors;
+        """
+        cursor.execute(sql)
+        conn.commit()
