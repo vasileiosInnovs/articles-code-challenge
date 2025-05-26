@@ -63,6 +63,7 @@ class Author:
         conn.commit()
 
         self.id = cursor.lastrowid
+        type(self).all[self.id] = self
 
     @classmethod
     def create(cls, name):
