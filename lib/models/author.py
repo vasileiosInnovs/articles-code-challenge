@@ -2,6 +2,8 @@ from db.connection import get_connection
 
 class Author:
 
+    all = {}
+
     def __init__(self, name, id=None):
         self.id = id
         self.name = name
@@ -19,25 +21,6 @@ class Author:
         if not isinstance(name, str) or not (1 <= len(name) <= 25):
             raise ValueError("The name of the author has to be a string with a length of between 1 and 25")
         self._name = name
-
-    def save(self):
-        conn = get_connection()
-        cursor = conn.cursor()
-
-        sql = """
-            INSERT INTO authors (name) VALUES (?)
-        """
-
-        cursor.execute(sql)
-        conn.commit()
-
-        self.id = cursor.lastrowid
-
-    @classmethod
-    def create(cls, name):
-        author = cls(name)
-        author.save()
-        return author
 
     @classmethod
     def create_table(cls):
@@ -65,4 +48,72 @@ class Author:
         cursor.execute(sql)
         conn.commit()
 
+    def save(self):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            INSERT INTO authors (name) VALUES (?)
+        """
+
+        cursor.execute(sql)
+        conn.commit()
+
+        self.id = cursor.lastrowid
+
+    @classmethod
+    def create(cls, name):
+        author = cls(name)
+        author.save()
+        return author
     
+    @classmethod
+    def instance_from_db(cls, row):
+        author = cls.all.get(row[0])
+        if author:
+            author.name = row[1]
+        else:
+            author = cls(row[1])
+            author.id = row[0]
+            cls.all[author.id] = author
+        return author
+
+    @classmethod
+    def find_by_id(cls, id):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT *
+            FROM authors
+            WHERE id = ?
+        """
+
+        row = cursor.execute(sql, (id, )).fetchone()
+        return cls.instance_from_db(row) if row else None
+    
+    @classmethod
+    def find_by_name(cls, name):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT *
+            FROM authors
+            WHERE name is ?
+        """
+        row = cursor.execute(sql, (name,)).fetchall()
+        return cls.instance_from_db(row) if row else None
+    
+    @classmethod
+    def get_all(cls):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT *
+            FROM authors
+        """
+        rows = cursor.execute(sql).fetchall()
+
+        return [cls.instance_from_db(row) for row in rows]
