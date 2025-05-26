@@ -88,14 +88,16 @@ class Article:
         return cls.instance_from_db(row) if row else None
     
     @classmethod
-    def find_by_name(cls, name):
+    def find_by_title(cls, title):
         conn = get_connection()
         cursor = conn.cursor()
 
         sql = """
             SELECT *
             FROM articles
-            WHERE name is ?
+            WHERE title is ?
         """
-        row = cursor.execute(sql, (name,)).fetchall()
+        row = cursor.execute(sql, (title,)).fetchall()
         return cls.instance_from_db(row) if row else None
+    
+    
