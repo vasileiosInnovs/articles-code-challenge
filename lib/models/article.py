@@ -61,12 +61,12 @@ class Article:
        cursor.execute(sql, (self.title, self.author_id, self.magazine_id))
        conn.commit()
        self.id = cursor.lastrowid
-       
+
     @classmethod
-    def create(cls, name):
-        author = cls(name)
-        author.save()
-        return author
+    def create(cls, title):
+        article = cls(title)
+        article.save()
+        return article
 
     @classmethod
     def instance_from_db(cls, row):
@@ -143,7 +143,7 @@ class Article:
 
         sql = """
             SELECT *
-            FROM authors
+            FROM articles
         """
         rows = cursor.execute(sql).fetchall()
 
