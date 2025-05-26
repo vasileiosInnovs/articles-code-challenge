@@ -1,4 +1,5 @@
 from db.connection import get_connection
+from article import Article 
 
 class Author:
 
@@ -8,6 +9,8 @@ class Author:
         self.id = id
         self.name = name
         self._article = []
+        self._magazine = []
+        Author.all.update(self)
 
     def __repr__(self):
         return f'<Author {self.id}: {self.name}>'
@@ -117,3 +120,23 @@ class Author:
         rows = cursor.execute(sql).fetchall()
 
         return [cls.instance_from_db(row) for row in rows]
+    
+    def articles(self):
+        conn = get_connection()
+        cursor = conn.cursor()
+        sql = "SELECT * FROM articles WHERE author_id = ?"
+        rows = cursor.execute(sql, (self.id,)).fetchall()
+        cursor.close()
+        conn.close()
+        return [Article.instance_from_db(row) for row in rows]
+    
+    def magazines(self):
+        conn = get_connection()
+        cursor = conn.cursor()
+        sql = """
+            SELECT DISTINCT m.* FROM magazines m
+            JOIN articles a ON m.id = a.magazine_id
+            WHERE a.author_id = ?
+        """
+        rows = cursor.execute(sql, (self.id,)).fetchall()
+        return rows
