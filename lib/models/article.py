@@ -97,9 +97,9 @@ class Article:
         sql = """
             SELECT *
             FROM articles
-            WHERE title is ?
+            WHERE title = ?
         """
-        row = cursor.execute(sql, (title,)).fetchall()
+        row = cursor.execute(sql, (title,)).fetchone()
         return cls.instance_from_db(row) if row else None
     
     @classmethod
