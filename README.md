@@ -1,4 +1,3 @@
-```markdown
 # 📰 Articles Code Challenge
 
 A Python project that models a many-to-many relationship between Authors, Magazines, and Articles using SQLite and Object-Oriented Programming (OOP). Each Author can write many Articles, and each Article belongs to one Magazine.
@@ -6,7 +5,7 @@ A Python project that models a many-to-many relationship between Authors, Magazi
 ---
 
 ## 📁 Project Structure
-
+```
 articles-code-challenge/
 ├── lib/                      # Main code directory
 │   ├── models/       
@@ -28,6 +27,7 @@ articles-code-challenge/
 ├── tests/
 │   └── test\_\*.py             # Unit tests (TBD)
 └── README.md                 # Project documentation
+```
 
 ---
 
@@ -41,7 +41,8 @@ Install dependencies with:
 
 ```bash
 pip install ipdb
-````
+```
+
 
 ---
 
@@ -101,18 +102,6 @@ python3 -m unittest discover tests
 python3 -m lib.db.seed
 ```
 
----
-
-## 📚 Learn More
-
-* [SQLite Documentation](https://www.sqlite.org/docs.html)
-* [Python `sqlite3` module](https://docs.python.org/3/library/sqlite3.html)
-* [Python OOP Basics](https://realpython.com/python3-object-oriented-programming/)
-
----
-
 ## 📄 License
 
 MIT License. Free to use, learn from, and modify.
-
-```
