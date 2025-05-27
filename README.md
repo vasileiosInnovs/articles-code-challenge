@@ -125,4 +125,3 @@ MIT License. Free to use, learn from, and modify.
 
 Let me know if you want this as a downloadable file or want help customizing it for deployment, publishing, or contributing guidelines.
 ```
-
