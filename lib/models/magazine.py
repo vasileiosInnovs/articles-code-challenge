@@ -118,3 +118,37 @@ class Magazine:
         cursor.execute(sql)
         rows = cursor.fetchall()
         return rows
+    
+    @classmethod
+    def magazines_with_multiple_authors(cls):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT m.*, COUNT(DISTINCT a.author_id) as author_count
+            FROM magazines m
+            JOIN articles a ON m.id = a.magazine_id
+            GROUP BY m.id
+            HAVING author_count >= 2
+        """
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        return rows
+    
+    @classmethod
+    def articles_counts_per_magazine(cls):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT m.name, COUNT(a.id) as article_count
+            FROM magazines m
+            LEFT JOIN articles a ON m.id = a.magazine_id
+            GROUP BY m.id
+        """
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        return rows
+    
+    
+
