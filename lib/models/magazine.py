@@ -150,5 +150,20 @@ class Magazine:
         rows = cursor.fetchall()
         return rows
     
-    
+    @classmethod
+    def top_author(cls):
+        conn = get_connection()
+        cursor = conn.cursor()
 
+        sql = """
+            SELECT au.*, COUNT(a.id) AS article_count
+            FROM authors au
+            JOIN articles a ON au.id = a.author_id
+            GROUP BY au.id
+            ORDER BY article_count DESC
+            LIMIT 1
+        """
+
+        cursor.execute(sql)
+        row = cursor.fetchone()
+        return row
