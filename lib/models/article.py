@@ -1,4 +1,4 @@
-from db.connection import get_connection
+from lib.db.connection import get_connection
 
 class Article:
     all = {}
@@ -18,7 +18,7 @@ class Article:
     
     @title.setter
     def title(self, title):
-        if not isinstance(title, str) or not (1 <= len(title) <= 25):
+        if not isinstance(title, str) or not (1 <= len(title) <= 253):
             raise ValueError("The title of the article has to be a string")
         self._title = title
 
@@ -149,4 +149,3 @@ class Article:
         rows = cursor.execute(sql).fetchall()
 
         return [cls.instance_from_db(row) for row in rows]
- 

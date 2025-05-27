@@ -1,4 +1,4 @@
-from db.connection import get_connection
+from lib.db.connection import get_connection
 
 class Magazine:
 
@@ -120,7 +120,7 @@ class Magazine:
         return rows
     
     @classmethod
-    def magazines_with_multiple_authors(cls):
+    def contributors(cls):
         conn = get_connection()
         cursor = conn.cursor()
 
@@ -136,7 +136,7 @@ class Magazine:
         return rows
     
     @classmethod
-    def articles_counts_per_magazine(cls):
+    def article_titles(cls):
         conn = get_connection()
         cursor = conn.cursor()
 
@@ -151,7 +151,7 @@ class Magazine:
         return rows
     
     @classmethod
-    def top_author(cls):
+    def contributing_authors(cls):
         conn = get_connection()
         cursor = conn.cursor()
 

@@ -1,4 +1,4 @@
-from db.connection import get_connection 
+from lib.db.connection import get_connection 
 
 class Author:
 
@@ -9,7 +9,7 @@ class Author:
         self.name = name
         self._article = []
         self._magazine = []
-        Author.all.update(self)
+        #Author.all.update(self)
 
     def __repr__(self):
         return f'<Author {self.id}: {self.name}>'
@@ -20,7 +20,7 @@ class Author:
     
     @name.setter
     def name(self, name):
-        if not isinstance(name, str) or not (1 <= len(name) <= 25):
+        if not isinstance(name, str) or not (1 <= len(name) <= 50):
             raise ValueError("The name of the author has to be a string with a length of between 1 and 25")
         self._name = name
 
@@ -103,9 +103,9 @@ class Author:
         sql = """
             SELECT *
             FROM authors
-            WHERE name is ?
+            WHERE name = ?
         """
-        row = cursor.execute(sql, (name,)).fetchall()
+        row = cursor.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
     
     @classmethod
