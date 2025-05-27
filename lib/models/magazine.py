@@ -103,3 +103,18 @@ class Magazine:
         sql = "SELECT * FROM magazines WHERE name = ?"
         row = cursor.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
+
+    def authors(self):
+        conn = get_connection()
+        cursor = conn.cursor()
+        
+        sql = """
+            SELECT DISTINCT au.*
+            FROM authors au
+            JOIN articles a ON au.id = a.author_id
+            WHERE a.magazine_id = ?
+        """, (self.id,)
+        
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        return rows
