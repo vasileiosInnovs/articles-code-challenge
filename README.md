@@ -7,8 +7,6 @@ A Python project that models a many-to-many relationship between Authors, Magazi
 
 ## 📁 Project Structure
 
-```
-
 articles-code-challenge/
 ├── lib/                      # Main code directory
 │   ├── models/       
@@ -30,8 +28,6 @@ articles-code-challenge/
 ├── tests/
 │   └── test\_\*.py             # Unit tests (TBD)
 └── README.md                 # Project documentation
-
-````
 
 ---
 
@@ -119,9 +115,4 @@ python3 -m lib.db.seed
 
 MIT License. Free to use, learn from, and modify.
 
-```
-
----
-
-Let me know if you want this as a downloadable file or want help customizing it for deployment, publishing, or contributing guidelines.
 ```
