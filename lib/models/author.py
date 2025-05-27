@@ -1,5 +1,4 @@
-from db.connection import get_connection
-from article import Article 
+from db.connection import get_connection 
 
 class Author:
 
@@ -143,3 +142,26 @@ class Author:
         """, (self.id,))
         rows = cursor.fetchall()
         return rows
+    
+    def add_article(self, magazine, title):
+        from article import Article
+
+        article = Article(title, self.id, magazine.id)
+        article.save()
+        return article
+    
+    def topic_areas(self):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT DISTINCT m.category
+            FROM magazine m
+            JOIN articles a ON m.id = a.magazine_id
+            WHERE a.author_id = ?
+        """
+
+        cursor.execute(sql , (self.id,))
+        rows = cursor.fetchall()
+
+        return [row[0] for row in rows]
