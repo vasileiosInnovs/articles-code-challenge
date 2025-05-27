@@ -125,19 +125,21 @@ class Author:
     def articles(self):
         conn = get_connection()
         cursor = conn.cursor()
-        sql = "SELECT * FROM articles WHERE author_id = ?"
-        rows = cursor.execute(sql, (self.id,)).fetchall()
-        cursor.close()
-        conn.close()
-        return [Article.instance_from_db(row) for row in rows]
+        cursor.execute("""
+            SELECT * FROM articles
+            WHERE author_id = ?
+        """, (self.id,))
+        rows = cursor.fetchall()
+        return rows
     
     def magazines(self):
         conn = get_connection()
         cursor = conn.cursor()
-        sql = """
-            SELECT DISTINCT m.* FROM magazines m
+        cursor.execute("""
+            SELECT DISTINCT m.*
+            FROM magazines m
             JOIN articles a ON m.id = a.magazine_id
             WHERE a.author_id = ?
-        """
-        rows = cursor.execute(sql, (self.id,)).fetchall()
+        """, (self.id,))
+        rows = cursor.fetchall()
         return rows
