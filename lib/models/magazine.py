@@ -1,4 +1,6 @@
 from lib.db.connection import get_connection
+from lib.models.author import Author
+import sqlite3
 
 class Magazine:
 
@@ -118,52 +120,84 @@ class Magazine:
         cursor.execute(sql)
         rows = cursor.fetchall()
         return rows
-    
-    @classmethod
-    def contributors(cls):
+
+    def contributors(self):
         conn = get_connection()
         cursor = conn.cursor()
 
         sql = """
-            SELECT m.*, COUNT(DISTINCT a.author_id) as author_count
+            SELECT DISTINCT au.*
+            FROM authors au
+            JOIN articles a ON a.author_id = au.id
+            WHERE a.magazine_id = ?
+        """
+        rows = cursor.execute(sql, (self.id,)).fetchall()
+
+        return [Author.instance_from_db(row) for row in rows]
+
+    def article_titles(self):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT title FROM articles
+            WHERE magazine_id = ?
+        """
+        rows = cursor.execute(sql, (self.id,)).fetchall()
+
+        return set([row[0] for row in rows])
+
+    def contributing_authors(self):
+        conn = get_connection()
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT DISTINCT a.author_id, au.name
+            FROM authors au
+            JOIN articles a ON au.id = a.author_id
+            WHERE a.magazine_id = ?
+        """, (self.id,))
+        rows = cursor.fetchall()
+
+        authors = [row['name'] for row in rows]
+        return authors 
+    
+    @classmethod
+    def with_multiple_authors(cls):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        sql = """
+            SELECT m.id, m.name, COUNT(DISTINCT a.author_id) AS author_count
             FROM magazines m
             JOIN articles a ON m.id = a.magazine_id
             GROUP BY m.id
-            HAVING author_count >= 2
+            HAVING author_count > 1
         """
         cursor.execute(sql)
         rows = cursor.fetchall()
-        return rows
+        magazines = []
+
+        for row in rows:
+            magazine = cls(name=row[1], category=row[2])
+            magazine.id = row[0]
+            magazines.append(magazine)
+
+        return magazines
     
     @classmethod
-    def article_titles(cls):
+    def article_counts(cls):
         conn = get_connection()
+        conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 
         sql = """
-            SELECT m.name, COUNT(a.id) as article_count
+            SELECT m.id, m.name, m.category, COUNT(a.id) as article_count
             FROM magazines m
             LEFT JOIN articles a ON m.id = a.magazine_id
             GROUP BY m.id
         """
-        cursor.execute(sql)
-        rows = cursor.fetchall()
+
+        rows = cursor.execute(sql).fetchall()
         return rows
-    
-    @classmethod
-    def contributing_authors(cls):
-        conn = get_connection()
-        cursor = conn.cursor()
-
-        sql = """
-            SELECT au.*, COUNT(a.id) AS article_count
-            FROM authors au
-            JOIN articles a ON au.id = a.author_id
-            GROUP BY au.id
-            ORDER BY article_count DESC
-            LIMIT 1
-        """
-
-        cursor.execute(sql)
-        row = cursor.fetchone()
-        return row

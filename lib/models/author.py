@@ -9,7 +9,6 @@ class Author:
         self.name = name
         self._article = []
         self._magazine = []
-        #Author.all.update(self)
 
     def __repr__(self):
         return f'<Author {self.id}: {self.name}>'
@@ -144,7 +143,7 @@ class Author:
         return rows
     
     def add_article(self, magazine, title):
-        from article import Article
+        from lib.models.article import Article
 
         article = Article(title, self.id, magazine.id)
         article.save()
@@ -165,3 +164,25 @@ class Author:
         rows = cursor.fetchall()
 
         return [row[0] for row in rows]
+    
+    @classmethod
+    def top_author(cls):
+        conn = get_connection()
+        cursor = conn.cursor()
+    
+        sql = """
+            SELECT a.id, a.name, COUNT(ar.id) AS article_count
+            FROM authors a
+            JOIN articles ar ON a.id = ar.author_id
+            GROUP BY a.id
+            ORDER BY article_count DESC
+            LIMIT 1
+        """
+    
+        row = cursor.execute(sql).fetchone()
+        if row:
+            author = cls(name=row[1])
+            author.id = row[0]
+            return author
+        else:
+            return None
